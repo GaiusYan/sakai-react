@@ -173,7 +173,6 @@ function DepotCrud() {
     };
 
     const deleteSelectedDepots = () => {
-        //TODO: implements deleteAllByIds
         let _depots = (depots as any)?.filter((val: any) => !(selectedDepots as any)?.includes(val));
         setDepots(_depots);
         (selectedDepots as any).forEach((d: any) => {
@@ -359,7 +358,7 @@ function DepotCrud() {
                 onHide={hideDeleteDepotDialog}
             >
                 <div className='flex align-items-center justify-content-center'>
-                    <i className='pi pi-exclamation-triangle mr-3' style={{width: '2rem'}}></i>
+                    <i className='pi pi-exclamation-triangle mr-3' style={{width: '4rem'}}></i>
                     {depot &&
                         <span>
                             Êtes-vous sure de vouloir supprimer <b>{depot.nom}</b>

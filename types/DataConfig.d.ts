@@ -33,3 +33,8 @@ export type Etagere = {
     id?:number;
     designation?: string;
 }
+
+export type FormeCallenique = {
+    id?: number,
+    designation?: string
+}

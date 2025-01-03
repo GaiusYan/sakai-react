@@ -3,6 +3,7 @@ import { EtagereService } from '@/demo/service/EtagereService';
 import { Etagere } from '@/types/DataConfig';
 import { log } from 'console';
 import { globalAgent } from 'http';
+import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
@@ -34,6 +35,19 @@ function EtagereCrud() {
     const toast = useRef<Toast>(null);
     const dataTable = useRef<DataTable<any>>(null);
     const clearFilter = () => {
+        initFilter();
+    }
+
+    const initFilter = () => {
+        setFilters({
+            global:
+                { value: null, matchMode: FilterMatchMode.CONTAINS },
+                designation: {
+                    operator: FilterOperator.AND,
+                    constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }]
+                }
+            })
+        setGlobalFilter('')
     }
 
     const openNew = () => {
@@ -58,16 +72,31 @@ function EtagereCrud() {
     const saveEtagere = () => {
         etagere.designation &&  setSubmitted(true)
         if(etagere.id){
-            //TODO: Update etagère
+            etagere.designation && EtagereService.updateEtagere(etagere).then((res) => {
+                console.log(res);
+                res.json().then((data) => {
+                    console.log(data);
+
+                    toast.current?.show({
+                        severity: res.status === 200 ?'success': 'error',
+                        summary: res.status === 200 ? "Success" : "Erreur",
+                        detail: res.status === 200 ?  "Enregistrement effectué avec succès" : data?.message,
+                        life: 3000
+                    })
+                    res?.status === 200 && setEtagereDialog(false);
+                    res?.status === 200 && setEtagere(emptyEtagere);
+                })
+            })
         }else{
             etagere.designation && EtagereService.createEtagere(etagere).then((res) => {
                 console.log(res);
-                res?.status === 200 &&
-                toast.current?.show({
-                    severity: 'success',
-                    summary: "Success",
-                    detail: "Enregistrement effectué avec succès",
-                    life: 3000
+                res.json().then((data) => {
+                    toast.current?.show({
+                        severity: res.status === 200 ?'success': 'error',
+                        summary: res.status === 200 ? "Success" : "Erreur",
+                        detail: res.status === 200 ?  "Enregistrement effectué avec succès" : data?.message,
+                        life: 3000
+                    })
                 })
                 res?.status === 200 && setEtagereDialog(false);
                 res?.status === 200 && setEtagere(emptyEtagere);
@@ -76,8 +105,8 @@ function EtagereCrud() {
     }
 
     const editEtagere = (etagere: Etagere) => {
-        setEtagere({...etagere})
-        setEtagereDialog(true)
+        setEtagere({...etagere});
+        setEtagereDialog(true);
     }
 
     const confirmDeleteEtagere = (etagere: Etagere) => {
@@ -86,15 +115,18 @@ function EtagereCrud() {
     }
 
     const deleteEtagere = () => {
-        toast.current?.show({
-            severity: 'success',
-            summary: "Success",
-            detail: "Suppression effectuée avec succès",
-            life: 3000
-        })
+        EtagereService.deteleEtagere(etagere).then((res) => {
 
-        setDeleteEtagereDialog(false)
-        setEtagere(emptyEtagere)
+            res?.status === 200 &&
+            toast.current?.show({
+                severity: 'success',
+                summary: "Success",
+                detail: "Suppression effectuée avec succès",
+                life: 3000
+            })
+            res?.status && setDeleteEtagereDialog(false)
+            res?.status && setEtagere(emptyEtagere)
+        })
     }
 
     const exportCSV = () => {
@@ -106,22 +138,33 @@ function EtagereCrud() {
     }
 
     const deleteSelectedEtageres = () => {
-        toast.current?.show({
-            severity: 'success',
-            summary:'Succès',
-            detail: 'Suppression effectuée avec succès'
-        })
+        let _etageres = (etageres as any)?.filter((val: any) => !(selectedEtageres as any)?.includes(val))
+        setEtageres(_etageres);
+        (selectedEtageres as any).forEach((etagere: any) => {
+            EtagereService.deteleEtagere(etagere).then((res) => {
+                console.log(res);
+                res?.status === 200 &&
+                toast.current?.show({
+                    severity: 'success',
+                    summary:'Succès',
+                    detail: 'Suppression effectuée avec succès'
+                });
+                res?.status === 200 && setDeleteEtageresDialog(false);
+                res?.status === 200 && setSelectedEtageres(null);
+            })
+        });
     }
 
     useEffect(() => {
         EtagereService.getEtageres().then((res) => {
-            res.json().then((response) => {
-                console.log(response);
-                res.status === 200 && setEtageres(response);
+            res.json().then((data) => {
+                console.log(data);
+                res.status === 200 && setEtageres(data);
             })
         }).catch((err) => {
             console.log(err);
         })
+        initFilter();
     }, [etagere])
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> , name: string ) => {
@@ -159,10 +202,16 @@ function EtagereCrud() {
 
     const header = (
         <div className='flex flex-column md:flex-row md:justify-content-between md:align-items-center'>
-            <h5 className='m-0'>Dépot</h5>
+            <h5 className='m-0'>Etagère</h5>
             <span className='block mt-2 md:mt-0 p-input-icon-left'>
                 <i className='pi pi-search'></i>
-                <InputText type='search' onInput={(e)=> setGlobalFilter(e.currentTarget.value)} placeholder='Rechercher...'/>
+                <InputText
+                    type='search'
+                    onInput={
+                        (e)=> setGlobalFilter(e.currentTarget.value)
+                    }
+                    placeholder='Rechercher...'
+                />
             </span>
         </div>
     )
@@ -174,19 +223,21 @@ function EtagereCrud() {
         </>
     )
 
-    const deleteEtagereDialogFooter = () => {
+    const deleteEtagereDialogFooter = (
         <>
             <Button label='Non' icon='pi pi-times' text onClick={hideDeleteEtagereDialog}></Button>
             <Button label='Non' icon='pi pi-check' text onClick={deleteEtagere}></Button>
         </>
-    }
+    );
 
-    const deleteEtageresDialogFooter = () => {
+    const deleteEtageresDialogFooter = (
         <>
         <Button label='Non' icon='pi pi-times' text onClick={hideDeleteEtageresDialog}></Button>
         <Button label='Non' icon='pi pi-check' text onClick={deleteSelectedEtageres}></Button>
         </>
-    }
+    )
+
+
   return (
     <div className='grid crud-demo'>
         <div className="col-12">
@@ -243,6 +294,44 @@ function EtagereCrud() {
                         />
                         {submitted && !etagere.designation && <small className='p-invalid'>Ce champs est obligatoire</small>}
                     </div>
+                </Dialog>
+
+                <Dialog
+                    visible={deleteEtagereDialog}
+                    style={{width: '450px'}}
+                    header={'Confirmer'}
+                    modal
+                    footer={deleteEtagereDialogFooter}
+                    onHide={hideDeleteEtagereDialog}
+                >
+                    <div className='flex align-items-center justify-content-center'>
+                    <i className='pi pi-exclamation-triangle mr-3' style={{width: '4rem'}}></i>
+                        {etagere &&
+                            <span>
+                                Êtes-vous sure de vouloir supprimer <b>{etagere.designation}</b>
+                            </span>
+                        }
+                    </div>
+
+                </Dialog>
+
+                <Dialog
+                    visible={deleteEtageresDialog}
+                    style={{width: '450px'}}
+                    header={'Confirmer'}
+                    modal
+                    footer={deleteEtageresDialogFooter}
+                    onHide={hideDeleteEtageresDialog}
+                >
+                    <div className='flex align-items-center justify-content-center'>
+                    <i className='pi pi-exclamation-triangle mr-3' style={{width: '4rem'}}></i>
+                        {etagere &&
+                            <span>
+                                Êtes-vous sure de vouloir supprimer les étagères selectionnés ?
+                            </span>
+                        }
+                    </div>
+
                 </Dialog>
             </div>
         </div>

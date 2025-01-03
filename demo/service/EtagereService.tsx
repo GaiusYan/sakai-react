@@ -48,7 +48,7 @@ export const EtagereService = {
         return res;
     },
 
-    async deleteDepot(etagere: Etagere): Promise<Response>{
+    async deteleEtagere(etagere: Etagere): Promise<Response>{
         const req = fetch(`${BASE_URL}/v1/etagere/${etagere.id}`,{
             method: 'delete',
             headers:{
