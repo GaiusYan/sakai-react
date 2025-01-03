@@ -24,7 +24,7 @@ export const FormeCalleniqueService = {
         return res.json();
     },
 
-    async createEtagere(formeCallenique: FormeCallenique): Promise<Response>{
+    async createFormeCallenique(formeCallenique: FormeCallenique): Promise<Response>{
         const req = fetch(`${BASE_URL}/v1/formeCallenique`,{
             method: 'post',
             headers:{
