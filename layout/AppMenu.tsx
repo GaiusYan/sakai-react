@@ -20,6 +20,7 @@ const AppMenu = () => {
                     items: [
                         { label: 'Fournisseur', icon: 'pi pi-fw pi-id-card', to: '/pages/fournisseur' },
                         { label: 'Dépot', icon: 'pi pi-wallet', to: '/pages/depots' },
+                        { label: 'Etagère', icon: 'pi pi-wallet', to: '/pages/etagere' },
                     ]
                 },
                 {
