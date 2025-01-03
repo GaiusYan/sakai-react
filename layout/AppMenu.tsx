@@ -12,6 +12,38 @@ const AppMenu = () => {
 
     const model: AppMenuItem[] = [
         {
+            label: 'Configuration',
+            items: [
+                {
+                    label: 'Nomenclature',
+                    icon: 'pi pi-fw pi-bookmark',
+                    items: [
+                        { label: 'Fournisseur', icon: 'pi pi-fw pi-id-card', to: '/pages/fournisseur' },
+                        { label: 'Dépot', icon: 'pi pi-wallet', to: '/pages/depots' },
+                    ]
+                },
+                {
+                    label: 'Submenu 2',
+                    icon: 'pi pi-fw pi-bookmark',
+                    items: [
+                        {
+                            label: 'Submenu 2.1',
+                            icon: 'pi pi-fw pi-bookmark',
+                            items: [
+                                { label: 'Submenu 2.1.1', icon: 'pi pi-fw pi-bookmark' },
+                                { label: 'Submenu 2.1.2', icon: 'pi pi-fw pi-bookmark' }
+                            ]
+                        },
+                        {
+                            label: 'Submenu 2.2',
+                            icon: 'pi pi-fw pi-bookmark',
+                            items: [{ label: 'Submenu 2.2.1', icon: 'pi pi-fw pi-bookmark' }]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             label: 'Home',
             items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
         },
@@ -178,9 +210,7 @@ const AppMenu = () => {
                     return !item?.seperator ? <AppMenuitem item={item} root={true} index={i} key={item.label} /> : <li className="menu-separator"></li>;
                 })}
 
-                <Link href="https://blocks.primereact.org" target="_blank" style={{ cursor: 'pointer' }}>
-                    <img alt="Prime Blocks" className="w-full mt-3" src={`/layout/images/banner-primeblocks${layoutConfig.colorScheme === 'light' ? '' : '-dark'}.png`} />
-                </Link>
+
             </ul>
         </MenuProvider>
     );

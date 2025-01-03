@@ -394,18 +394,29 @@ const TableDemo = () => {
                         <Column header="Balance" filterField="balance" dataType="numeric" style={{ minWidth: '10rem' }} body={balanceBodyTemplate} filter filterElement={balanceFilterTemplate} />
                         <Column field="status" header="Status" filterMenuStyle={{ width: '14rem' }} style={{ minWidth: '12rem' }} body={statusBodyTemplate} filter filterElement={statusFilterTemplate} />
                         <Column field="activity" header="Activity" showFilterMatchModes={false} style={{ minWidth: '12rem' }} body={activityBodyTemplate} filter filterElement={activityFilterTemplate} />
-                        <Column field="verified" header="Verified" dataType="boolean" bodyClassName="text-center" style={{ minWidth: '8rem' }} body={verifiedBodyTemplate} filter filterElement={verifiedFilterTemplate} />
                     </DataTable>
+                        <Column field="verified" header="Verified" dataType="boolean" bodyClassName="text-center" style={{ minWidth: '8rem' }} body={verifiedBodyTemplate} filter filterElement={verifiedFilterTemplate} />
                 </div>
             </div>
 
             <div className="col-12">
                 <div className="card">
                     <h5>Frozen Columns</h5>
-                    <ToggleButton checked={idFrozen} onChange={(e) => setIdFrozen(e.value)} onIcon="pi pi-lock" offIcon="pi pi-lock-open" onLabel="Unfreeze Id" offLabel="Freeze Id" style={{ width: '10rem' }} />
+                    <ToggleButton
+                        checked={idFrozen}
+                        onChange={(e) => setIdFrozen(e.value)}
+                        onIcon="pi pi-lock"
+                        offIcon="pi pi-lock-open"
+                        onLabel="Unfreeze Id"
+                        offLabel="Freeze Id"
+                        style={{ width: '10rem' }} />
 
-                    <DataTable value={customers2} scrollable scrollHeight="400px" loading={loading2} className="mt-3">
-                        <Column field="name" header="Name" style={{ flexGrow: 1, flexBasis: '160px' }} frozen className="font-bold"></Column>
+                    <DataTable value={customers2}
+                        scrollable
+                        scrollHeight="400px"
+                        loading={loading2} className="mt-3">
+                        <Column field="name" header="Name"
+                            style={{ flexGrow: 1, flexBasis: '160px' }} frozen className="font-bold"></Column>
                         <Column field="id" header="Id" style={{ flexGrow: 1, flexBasis: '100px' }} frozen={idFrozen} alignFrozen="left" bodyClassName={classNames({ 'font-bold': idFrozen })}></Column>
                         <Column field="country.name" header="Country" style={{ flexGrow: 1, flexBasis: '200px' }} body={countryBodyTemplate}></Column>
                         <Column field="date" header="Date" style={{ flexGrow: 1, flexBasis: '200px' }} body={dateBodyTemplate}></Column>
