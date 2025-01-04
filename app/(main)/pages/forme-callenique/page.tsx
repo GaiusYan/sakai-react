@@ -58,7 +58,7 @@ function FormeCalleniqueCrud() {
     }
 
     const hideDeleteFormeCalleniqueDialog = () => {
-        setDeleteFormeCalleniquesDialog(false)
+        setDeleteFormeCalleniqueDialog(false)
     }
 
     const hideDeleteFormeCalleniquesDialog = () => {
@@ -66,23 +66,43 @@ function FormeCalleniqueCrud() {
     }
 
     const saveFormeCallenique = () => {
-        setSubmitted(true);
-        console.log(formeCallenique);
-        FormeCalleniqueService.createFormeCallenique(formeCallenique).then((res) => {
-            console.log(res);
-            res.json().then((data) => {
-                res.status === 200 && setFormeCallenique(data);
+        formeCallenique.designation && setSubmitted(true);
+        if(formeCallenique.id){
+            formeCallenique.designation &&  FormeCalleniqueService.updateFormeCallenique(formeCallenique).then((res) => {
+                console.log(res);
+                res.json().then((data) => {
+                    res.status === 200 && setFormeCallenique(data);
+                    toast.current?.show({
+                        severity: res.status === 200 ? 'success' : 'error',
+                        summary: res.status === 200 ? 'Succès' : 'Erreur',
+                        detail:  res.status === 200 ?'Suppression effectuée avec succès': data?.message,
+                        life: 3000
+                    });
+                })
+                res?.status === 200 && setFormeCalleniqueDialog(false)
+                res?.status === 200 && setFormeCallenique(emptyFormeCallenique);
+            }).catch((err) => {
+                console.log(err);
             })
-        })
-        toast.current?.show({
-            severity:  'success',
-            summary: 'Succès',
-            detail:  'Suppression effectuée avec succès',
-            life: 3000
-        });
+        }else{
+            formeCallenique.designation &&  FormeCalleniqueService.createFormeCallenique(formeCallenique).then((res) => {
+                console.log(res);
+                res.json().then((data) => {
+                    res.status === 200 && setFormeCallenique(data);
+                    toast.current?.show({
+                        severity: res.status === 200 ? 'success' : 'error',
+                        summary: res.status === 200 ? 'Succès' : 'Erreur',
+                        detail:  res.status === 200 ?'Suppression effectuée avec succès': data?.message,
+                        life: 3000
+                    });
+                })
+                res?.status === 200 && setFormeCalleniqueDialog(false)
+                res?.status === 200 && setFormeCallenique(emptyFormeCallenique);
+            }).catch((err) => {
+                console.log(err);
+            })
 
-        setFormeCalleniqueDialog(false)
-        setFormeCallenique(emptyFormeCallenique);
+        }
     }
 
     const editFormeCallenique = (formeCallenique: FormeCallenique) => {
@@ -96,15 +116,18 @@ function FormeCalleniqueCrud() {
     }
 
     const deleteFormeCallenique = () => {
-        //TODO: deleteFormeCallenique method
-        setFormeCallenique(emptyFormeCallenique);
-        setDeleteFormeCalleniqueDialog(false);
-        toast.current?.show({
-            severity:  'success',
-            summary: 'Succès',
-            detail:  'Suppression effectuée avec succès',
-            life: 3000
-        });
+        FormeCalleniqueService.deleteFormeCallenique(formeCallenique).then((res) => {
+            console.log(res);
+            res?.status === 200 &&
+            toast.current?.show({
+                severity:  'success',
+                summary: 'Succès',
+                detail:  'Suppression effectuée avec succès',
+                life: 3000
+            });
+            res?.status === 200 && setFormeCallenique(emptyFormeCallenique);
+            res?.status === 200 && setDeleteFormeCalleniqueDialog(false);
+        })
     }
 
     const exportCSV = () => {
@@ -116,25 +139,32 @@ function FormeCalleniqueCrud() {
     }
 
     const deleteSelectedFormeCallenique = () => {
-        setDeleteFormeCalleniquesDialog(false);
-        setSelectedFormeCalleniques(null);
-        toast.current?.show({
-            severity:  'success',
-            summary: 'Succès',
-            detail:  'Suppression effectuée avec succès',
-            life: 3000
+        (selectedFormeCalleniques as any).forEach((formeCallenique: any) => {
+            FormeCalleniqueService.deleteFormeCallenique(formeCallenique).then((res) => {
+                console.log(res);
+                res?.status === 200 &&
+                toast.current?.show({
+                    severity:  'success',
+                    summary: 'Succès',
+                    detail:  'Suppression effectuée avec succès',
+                    life: 3000
+                });
+                res?.status === 200 && setFormeCallenique(emptyFormeCallenique);
+                res?.status === 200 && setDeleteFormeCalleniquesDialog(false);
+            })
         });
+
     }
 
     useEffect(() => {
-        setLoading(true);
         FormeCalleniqueService.getFormeCalleniques().then((res) => {
             res.status === 200 &&
             res.json().then((data) => {
                 console.log(data);
-                setFormeCalleniques(data)
-                setLoading(false)
+                setFormeCalleniques(data);
             })
+        }).catch((err) => {
+            console.log(err);
         })
         initFilter();
     },[formeCallenique])
@@ -149,7 +179,7 @@ function FormeCalleniqueCrud() {
             <React.Fragment>
                 <div className='my-2'>
                     <Button label='Nouveau' icon='pi pi-plus' severity='success' className='mr-2' onClick={openNew}></Button>
-                    <Button label='Supprimer' icon='pi pi-trash' severity='danger' onClick={deleteSelectedFormeCallenique} disabled={!selectedFormeCalleniques || !(selectedFormeCalleniques as any).length}></Button>
+                    <Button label='Supprimer' icon='pi pi-trash' severity='danger' onClick={confirmDeleteSelectedFormeCallenique} disabled={!selectedFormeCalleniques || !(selectedFormeCalleniques as any).length}></Button>
                 </div>
             </React.Fragment>
         );
@@ -192,15 +222,15 @@ function FormeCalleniqueCrud() {
 
     const deleteFormeCalleniqueDialogFooter = (
         <>
-            <Button label='Oui' icon='pi pi-times' text onClick={hideDeleteFormeCalleniqueDialog}></Button>
-            <Button label='Non' icon='pi pi-trash' text onClick={deleteFormeCallenique}></Button>
+            <Button label='Non' icon='pi pi-times' text onClick={hideDeleteFormeCalleniqueDialog}></Button>
+            <Button label='Oui' icon='pi pi-check' text onClick={deleteFormeCallenique}></Button>
         </>
     )
 
     const deleteFormeCalleniquesDialogFooter = (
         <>
-            <Button label='Oui' icon='pi pi-times' text onClick={hideDeleteFormeCalleniquesDialog}></Button>
-            <Button label='Non' icon='pi pi-trash' text onClick={deleteSelectedFormeCallenique}></Button>
+            <Button label='Non' icon='pi pi-times' text onClick={hideDeleteFormeCalleniquesDialog}></Button>
+            <Button label='Oui' icon='pi pi-check' text onClick={deleteSelectedFormeCallenique}></Button>
         </>
     )
 

@@ -36,7 +36,7 @@ export const FormeCalleniqueService = {
         return res;
     },
 
-    async updateEtagere(formeCallenique: FormeCallenique): Promise<Response>{
+    async updateFormeCallenique(formeCallenique: FormeCallenique): Promise<Response>{
         const req = fetch(`${BASE_URL}/v1/formeCallenique/${formeCallenique.id}`,{
             method: 'put',
             headers:{
@@ -48,7 +48,7 @@ export const FormeCalleniqueService = {
         return res;
     },
 
-    async deteleEtagere(formeCallenique: FormeCallenique): Promise<Response>{
+    async deleteFormeCallenique(formeCallenique: FormeCallenique): Promise<Response>{
         const req = fetch(`${BASE_URL}/v1/formeCallenique/${formeCallenique.id}`,{
             method: 'delete',
             headers:{
