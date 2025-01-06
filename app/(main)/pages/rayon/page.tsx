@@ -30,8 +30,8 @@ function RayonCrud() {
     const [globalFilter,setGlobalFilter] = useState('');
     const [filters,setFilters] = useState<DataTableFilterMeta>({});
     const toast = useRef<Toast>(null);
-        const dataTable = useRef<DataTable<any>>(null);
-        const clearFilter = () => {
+    const dataTable = useRef<DataTable<any>>(null);
+    const clearFilter = () => {
             initFilter();
         }
 

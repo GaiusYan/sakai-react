@@ -23,6 +23,7 @@ const AppMenu = () => {
                         { label: 'Etagère', icon: 'pi pi-list', to: '/pages/etagere' },
                         { label: 'Forme callenique', icon: 'pi pi-table', to: '/pages/forme-callenique' },
                         { label: 'Rayon', icon: 'pi pi-table', to: '/pages/rayon' },
+                        { label: 'Type produit', icon: 'pi pi-clone', to: '/pages/type-produit' },
                     ]
                 },
                 {
