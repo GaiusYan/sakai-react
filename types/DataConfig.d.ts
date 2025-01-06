@@ -44,3 +44,8 @@ export type Rayon = {
     id?: number;
     designation?: string;
 }
+
+export type TypeProduit = {
+    id?: number;
+    designation?: string;
+}

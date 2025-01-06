@@ -17,7 +17,7 @@ export const RayonService = {
 
     async getRayon(id: number | undefined): Promise<Response>
     {
-        const res = await fetch(`${BASE_URL}/v1/Rayon/${id}`);
+        const res = await fetch(`${BASE_URL}/v1/rayon/${id}`);
         if (!res.ok) {
             throw new Error("Erreur survenu lors de la récuperation des rayons")
         }
@@ -25,7 +25,7 @@ export const RayonService = {
     },
 
     async createRayon(Rayon: Rayon): Promise<Response>{
-        const req = fetch(`${BASE_URL}/v1/Rayon`,{
+        const req = fetch(`${BASE_URL}/v1/rayon`,{
             method: 'post',
             headers:{
                 "Content-type":'application/json'
@@ -37,7 +37,7 @@ export const RayonService = {
     },
 
     async updateRayon(rayon: Rayon): Promise<Response>{
-        const req = fetch(`${BASE_URL}/v1/Rayon/${rayon.id}`,{
+        const req = fetch(`${BASE_URL}/v1/rayon/${rayon.id}`,{
             method: 'put',
             headers:{
                 "Content-type":'application/json'
@@ -49,7 +49,7 @@ export const RayonService = {
     },
 
     async deleteRayon(rayon: Rayon): Promise<Response>{
-        const req = fetch(`${BASE_URL}/v1/Rayon/${rayon.id}`,{
+        const req = fetch(`${BASE_URL}/v1/rayon/${rayon.id}`,{
             method: 'delete',
             headers:{
                 "Content-type":'application/json'
