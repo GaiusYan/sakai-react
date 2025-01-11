@@ -60,7 +60,14 @@ function TypeProduitCrud() {
             TypeProduitService.updateTypeProduit(typeProduit).then((res) => {
                 console.log(res);
                 res.json().then((data) => {
-
+                    toast.current?.show({
+                        severity: res?.status === 200 ? 'success' : "error",
+                        summary: res?.status === 200 ? "Succès" : "Erreur",
+                        detail: res?.status === 200 ? "Enregistrement effectué avec succès" : data?.message,
+                        life: 3000
+                    });
+                    res?.status === 200 && setTypeProduitDialog(false);
+                    res?.status === 200 && setTypeProduit(emptyTypeProduit);
                 })
             }).catch((err) => {
                 console.log(err);
@@ -96,13 +103,17 @@ function TypeProduitCrud() {
     }
 
     const deleteTypeProduit = () => {
-        toast.current?.show({
-            severity: "success",
-            summary: "Succès",
-            detail: "Suppression effectuée avec succès"
+        TypeProduitService.deleteTypeProduit(typeProduit).then((res) => {
+            console.log(res);
+            toast.current?.show({
+                severity: res?.status === 200 ? "success" : 'error',
+                summary: res?.status === 200 ? "Succès" : "Erreur",
+                detail: res?.status === 200 ? "Suppression effectuée avec succès" : "Erreur servenu lors de la suppression",
+                life:3000
+            })
+            res?.status === 200 && setDeleteTypeProduitDialog(false);
+            res?.status === 200 && setTypeProduit(emptyTypeProduit);
         })
-        setDeleteTypeProduitDialog(false);
-        setTypeProduit(emptyTypeProduit);
     }
 
     const exportCSV = () => {
@@ -110,18 +121,25 @@ function TypeProduitCrud() {
     }
 
     const confirmDeleteTypeProduits = () => {
-        setDeleteTypeProduitsDialog(false);
+        setDeleteTypeProduitsDialog(true);
     }
 
     const deleteSelectedTypeProduit = () => {
-        let _typeProduits = (typeProduits as any)?.filter((val: any) => !(selectedTypeProduits as any)?.includes(val));
-        toast.current?.show({
-            severity: "success",
-            summary: "Succès",
-            detail: "Suppression effectuée avec succès"
+        (selectedTypeProduits as any)?.map((typeProduit: any) => {
+            TypeProduitService.deleteTypeProduit(typeProduit).then((res) => {
+                console.log(res);
+                toast.current?.show({
+                    severity: res?.status === 200 ? "success" : 'error',
+                    summary: res?.status === 200 ? "Succès" : "Erreur",
+                    detail: res?.status === 200 ? "Suppression effectuée avec succès" : "Erreur servenu lors de la suppression",
+                    life:3000
+                })
+                let _typeProduits = (typeProduits as any)?.filter((val: any) => !(selectedTypeProduits as any)?.includes(val));
+                res?.status === 200 && setTypeProduits(_typeProduits);
+                res?.status === 200 && setSelectedTypeProduits(null);
+                res?.status === 200 && setDeleteTypeProduitsDialog(false);
+            })
         })
-        setSelectedTypeProduits(null);
-        setDeleteTypeProduitsDialog(false);
     }
 
     const initFilter = () => {

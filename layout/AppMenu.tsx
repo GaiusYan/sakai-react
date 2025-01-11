@@ -27,16 +27,18 @@ const AppMenu = () => {
                     ]
                 },
                 {
-                    label: 'Submenu 2',
-                    icon: 'pi pi-fw pi-bookmark',
+                    label: 'Configuration',
+                    icon: 'pi pi-cog',
                     items: [
                         {
-                            label: 'Submenu 2.1',
-                            icon: 'pi pi-fw pi-bookmark',
-                            items: [
-                                { label: 'Submenu 2.1.1', icon: 'pi pi-fw pi-bookmark' },
-                                { label: 'Submenu 2.1.2', icon: 'pi pi-fw pi-bookmark' }
-                            ]
+                            label: 'Remontage des produits',
+                            icon: 'pi pi-cloud-download',
+                            to:'/pages/remonte-product'
+                        },
+                        {
+                            label: 'Gestion des produits',
+                            icon: 'pi pi-database',
+                            to:'/pages/produits'
                         },
                         {
                             label: 'Submenu 2.2',

@@ -80,7 +80,8 @@ const ListDemo = () => {
 
     const dataViewHeader = (
         <div className="flex flex-column md:flex-row md:justify-content-between gap-2">
-            <Dropdown value={sortKey} options={sortOptions} optionLabel="label" placeholder="Sort By Price" onChange={onSortChange} />
+            <Dropdown value={sortKey} options={sortOptions} optionLabel="label"
+             placeholder="Sort By Price" onChange={onSortChange} />
             <span className="p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText value={globalFilterValue} onChange={onFilter} placeholder="Search by Name" />
